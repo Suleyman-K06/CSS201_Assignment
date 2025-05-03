@@ -64,7 +64,7 @@ public class UserManager {
     
     private boolean isDuplicateUsername(String username) {
         for (User user : users) {
-            if (user.getUsername().equalsIgnoreCase(username)) {
+            if (user.getName().equalsIgnoreCase(username)) {
                 return true;
             }
         }
@@ -91,7 +91,7 @@ public class UserManager {
 
     public void editUser(User user) {
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getUsername().equals(user.getUsername())) {
+            if (users.get(i).getName().equals(user.getName())) {
                 users.set(i, user);
                 return;
             }

@@ -78,7 +78,9 @@ public interface Manageable<T extends Nameable> {
     }
 
     default String getNonEmptyInput(Scanner scanner, String prompt) {
-        scanner.skip("\n");
+        if (scanner.hasNextLine()) {
+            scanner.nextLine(); // Clear the buffer
+        }
         String input;
         do {
             System.out.println(prompt);
