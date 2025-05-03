@@ -7,11 +7,10 @@ public class Craft implements Nameable{
     private Category category;
     private String description;
 
-    public Craft(String name, int quantity, double price, Category category, String description) {
+    public Craft(String name, int quantity, double price, String description) {
         this.name = name;
         this.quantity = quantity;
         this.price = price;
-        this.category = category;
         this.description = description;
     }
 

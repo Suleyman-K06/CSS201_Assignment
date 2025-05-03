@@ -9,6 +9,10 @@ public class CategoryManager implements Manageable<Craft> {
         this.categories = new ArrayList<>();
     }
 
+    public ArrayList<Category> getCategories() {
+        return categories;
+    }
+
     enum EditChoice {
         NAME("Edit Name", 1),
         ADD("Add Crafts", 2), 
@@ -35,6 +39,7 @@ public class CategoryManager implements Manageable<Craft> {
     @Override
     public void add(ArrayList<Craft> crafts, Scanner scanner) {
         System.out.println("Enter the name of new category: ");
+        scanner.skip("\n"); 
 
         String name = getValidName(scanner);
         if (name == null) {

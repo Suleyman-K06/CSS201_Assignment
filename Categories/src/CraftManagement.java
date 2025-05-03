@@ -1,22 +1,10 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class CraftManagement implements Manageable<Category> {
-    private List<Craft> crafts = new ArrayList<>();
-
-    // public void initializeCrafts() {
-    //     crafts.add(new Craft("Wooden Carving", 5, 25.50, "Woodwork", "Handcrafted wooden decoration."));
-    //     crafts.add(new Craft("Clay Pot", 10, 15.75, "Pottery", "Handmade clay pot for plants."));
-    //     crafts.add(new Craft("Beaded Necklace", 20, 8.99, "Jewelry", "Colorful handmade beaded necklace."));
-    //     crafts.add(new Craft("Glass Painting", 2, 45.00, "Painting", "Beautiful painting on glass."));
-    //     crafts.add(new Craft("Handwoven Basket", 15, 12.50, "Weaving", "Eco-friendly handwoven basket."));
-    //     crafts.add(new Craft("Resin Keychain", 30, 5.99, "Resin Art", "Personalized resin keychains."));
-    //     crafts.add(new Craft("Embroidered Cushion", 8, 29.99, "Embroidery", "Hand-stitched decorative cushion."));
-    //     crafts.add(new Craft("Origami Paper Art", 50, 3.50, "Paper Craft", "Intricate origami paper sculpture."));
-    //     crafts.add(new Craft("Ceramic Mug", 12, 18.75, "Pottery", "Hand-painted ceramic mug."));
-    //     crafts.add(new Craft("Macrame Wall Hanging", 4, 55.00, "Macrame", "Elegant macrame wall decor."));
-    // }
+    private ArrayList<Craft> crafts = new ArrayList<>();
 
     public void hr() {
         System.out.println("------------------------------------------------------------------------------------------------------");
@@ -25,8 +13,8 @@ public class CraftManagement implements Manageable<Category> {
     public int intValidator(Scanner scanner) {
         while (true) {
             try {
-                return Integer.parseInt(scanner.nextLine().trim());
-            } catch (NumberFormatException e) {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
                 System.out.println("Invalid input! Please enter a number: ");
             }
         }
@@ -35,8 +23,8 @@ public class CraftManagement implements Manageable<Category> {
     public double doubleValidator(Scanner scanner) {
         while (true) {
             try {
-                return Double.parseDouble(scanner.nextLine().trim());
-            } catch (NumberFormatException e) {
+                return scanner.nextDouble();
+            } catch (InputMismatchException e) {
                 System.out.println("Invalid input! Please enter a decimal number: ");
             }
         }
@@ -44,8 +32,7 @@ public class CraftManagement implements Manageable<Category> {
 
     @Override
     public void add(ArrayList<Category> categories, Scanner scanner) {
-        System.out.println("Enter name:");
-        String name = scanner.nextLine().trim();
+        String name = getNonEmptyInput(scanner, "Enter craft name: ");
 
         System.out.println("Enter quantity:");
         int quantity = intValidator(scanner);
@@ -53,12 +40,18 @@ public class CraftManagement implements Manageable<Category> {
         System.out.println("Enter price:");
         double price = doubleValidator(scanner);
 
-        displayList(categories);
+        int categoryIndex = -1;
+        if (!categories.isEmpty()) {
+            displayList(categories);
+            System.out.println("Select a category by index ");
+            
+            categoryIndex = getValidIndex(scanner, categories.size());
+        }
 
-        System.out.println("Enter description:");
-        String description = scanner.nextLine().trim();
+        String description = getNonEmptyInput(scanner, "Enter description: ");
 
-        Craft craft = new Craft(name, quantity, price, category, description);
+        Craft craft = new Craft(name, quantity, price, description);
+        if (categoryIndex > -1) craft.setCategory(categories.get(categoryIndex));
         crafts.add(craft);
         System.out.println("Craft added successfully!");
     }
@@ -83,6 +76,7 @@ public class CraftManagement implements Manageable<Category> {
 
     @Override
     public void edit(ArrayList<Category> categories, Scanner scanner) {
+        int index = getValidIndex(scanner, crafts.size());
         Craft craft = crafts.get(index);
 
         System.out.printf("Current name (%s): ", craft.getName());
@@ -148,8 +142,8 @@ public class CraftManagement implements Manageable<Category> {
 
     public void searchByField(Scanner scanner, SearchField field) {
         boolean found = false;
-        System.out.printf("Enter search term for %s: ", field);
-        String input = scanner.nextLine().toLowerCase();
+
+        String input = getNonEmptyInput(scanner, ("Enter search term for %s: " + field)).toLowerCase();
 
         hr();
         System.out.printf("|%-5s|%-20s|%-5s|%-10s|%-15s|%-30s|%n", "ID", "Name", "Qty", "Price", "Category", "Description");
@@ -178,13 +172,21 @@ public class CraftManagement implements Manageable<Category> {
                 craft.getName(),
                 craft.getQuantity(),
                 craft.getPrice(),
-                craft.getCategory(),
+                craft.getCategory().getName(),
                 craft.getDescription());
     }
 
     @Override
     public void delete(Scanner scanner) {
        
+    }
+
+    public CraftManagement() {
+        this.crafts = new ArrayList<>();
+    }
+
+    public ArrayList<Craft> getCrafts() {
+        return crafts;
     }
 }
 

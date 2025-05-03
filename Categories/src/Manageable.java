@@ -21,6 +21,7 @@ public interface Manageable<T extends Nameable> {
         String input = scanner.nextLine().trim();
         String[] indexStrings = input.split(",");
     
+        displayList(list);
         for (String indexString : indexStrings) {
             try {
                 int index = Integer.parseInt(indexString.trim()) - 1;
@@ -59,18 +60,25 @@ public interface Manageable<T extends Nameable> {
     default int getValidIndex(Scanner scanner, int maxIndex) {
         while (true) {
             try {
-                int index = Integer.parseInt(scanner.nextLine().trim()) - 1;
-                if (index >= 0 && index < maxIndex) {
-                    return index;
+                System.out.print("Enter your choice (1-" + maxIndex + "): ");
+                String input = scanner.nextLine().trim();
+                if (input.isEmpty()) {
+                    System.out.println("Input cannot be empty. Please try again.");
+                    continue;
                 }
-                System.out.println("Invalid index. Please enter a number between 1 and " + maxIndex);
+                int index = Integer.parseInt(input) - 1; // Convert to zero-based index
+                if (index >= 0 && index < maxIndex) {
+                    return index; // Valid index
+                }
+                System.out.println("Invalid index. Please enter a number between 1 and " + maxIndex + ".");
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+                System.out.println("Invalid input. Please enter a valid number.");
             }
         }
     }
 
     default String getNonEmptyInput(Scanner scanner, String prompt) {
+        scanner.skip("\n");
         String input;
         do {
             System.out.println(prompt);
