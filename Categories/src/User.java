@@ -1,4 +1,4 @@
-public class User {
+public class User implements Nameable {
     private String username;
     private String password;
 
@@ -7,7 +7,7 @@ public class User {
         this.password = password;
     }
     
-    public String getUsername() {
+    public String getName() {
         return username;
     }
 
