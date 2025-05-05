@@ -38,15 +38,7 @@ public class CategoryManager implements Manageable<Craft> {
 
     @Override
     public void add(ArrayList<Craft> crafts, Scanner scanner) {
-        System.out.println("Enter the name of new category: ");
-        scanner.skip("\n"); 
-
-        String name = getValidName(scanner);
-        if (name == null) {
-            System.out.println("Category name cannot be empty.");
-            return;
-        }
-
+        String name = getNonEmptyInput(scanner, "Enter the name of new category:");
 
         ArrayList<Craft> selectedCrafts = selectFromList(crafts, scanner, "add");
         Category newCategory = new Category(name, selectedCrafts);
@@ -65,12 +57,9 @@ public class CategoryManager implements Manageable<Craft> {
         if (selectedCategory == null) return;
 
         while (true) {
-            displayEditMenu();
-            EditChoice choice = getEditChoice(scanner);
+            EditChoice choice = selectEditChoice(scanner);
             if (choice == null) continue;
-            
             if (choice == EditChoice.EXIT) return;
-            
             handleEditChoice(choice, selectedCategory, crafts, scanner);
         }
     }
@@ -85,39 +74,18 @@ public class CategoryManager implements Manageable<Craft> {
         Category selectedCategory = selectCategory(scanner);
         if (selectedCategory == null) return;
 
-        if (confirmDeletion(scanner, selectedCategory)) {
+        if (confirmAction(scanner, "delete this category")) {
             categories.remove(selectedCategory);
             System.out.println("Category " + selectedCategory.getName() + " deleted successfully.");
         }
     }
 
 
-    private String getValidName(Scanner scanner) {
-        String name = scanner.nextLine().trim();
-        if (name.isEmpty()) {
-            System.out.println("Category name cannot be empty.");
-            return null;
-        }
-        return name;
-    }
-
     private Category selectCategory(Scanner scanner) {
         displayCategoriesList();
-        try {
-            int selectedIndex = scanner.nextInt();
-            scanner.nextLine();
+        int selectedIndex = getValidIndex(scanner, categories.size());
             
-            if (selectedIndex <= 0 || selectedIndex > categories.size()) {
-                System.out.println("Invalid category selection.");
-                return null;
-            }
-            
-            return categories.get(selectedIndex - 1);
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a number.");
-            scanner.nextLine(); // Consume invalid input
-            return null;
-        }
+        return categories.get(selectedIndex);
     }
 
     private void displayCategoriesList() {
@@ -127,25 +95,20 @@ public class CategoryManager implements Manageable<Craft> {
         }
     }
 
-    private void displayEditMenu() {
+
+    private EditChoice selectEditChoice(Scanner scanner) {
         System.out.println("\nWhat would you like to edit?");
         for (EditChoice choice : EditChoice.values()) {
             System.out.println(choice.getIndex() + ". " + choice.getLabel());
         }
-    }
 
-    private EditChoice getEditChoice(Scanner scanner) {
-        try {
-            int input = Integer.parseInt(scanner.nextLine().trim());
-            for (EditChoice choice : EditChoice.values()) {
-                if (choice.getIndex() == input) {
-                    return choice;
-                }
+        int input = getValidIndex(scanner, EditChoice.values().length) + 1;
+        for (EditChoice choice : EditChoice.values()) {
+            if (choice.getIndex() == input) {
+                return choice;
             }
-            System.out.println("Invalid choice! Please try again.");
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number!");
         }
+
         return null;
     }
 
@@ -169,7 +132,7 @@ public class CategoryManager implements Manageable<Craft> {
                 removeFrom(category, scanner);
                 break;
             case DELETE:
-                if (confirmDeletion(scanner, category)) {
+                if (confirmAction(scanner, "delete this category")) {
                     categories.remove(category);
                     System.out.println("Category " + category.getName() + " deleted!");
                 }
@@ -177,15 +140,6 @@ public class CategoryManager implements Manageable<Craft> {
             default:
                 break;
         }
-    }
-
-    private boolean confirmDeletion(Scanner scanner, Category category) {
-        String input = "";
-        while (!input.equalsIgnoreCase("yes") && !input.equalsIgnoreCase("no")) {
-            System.out.println("Are you sure you want to delete this category? (Enter Yes / No)");
-            input = scanner.nextLine().trim();
-        }
-        return input.equalsIgnoreCase("yes");
     }
 
     public void removeFrom(Category category, Scanner scanner) {

@@ -2,7 +2,7 @@
 import java.util.Scanner;
 public class App {
 
-    enum menu{
+    enum Menu{
         ADD_CRAFT ("Add Craft"),
         ADD_CATEGORY("Add Category"),
         VIEW_CRAFTS ("View Crafts"),
@@ -11,7 +11,7 @@ public class App {
         SEARCH_CRAFTS("Search Crafts"),
         EXIT("Exit");
         private String displayName;
-        menu(String displayName) {
+        Menu(String displayName) {
             this.displayName = displayName;
         }
         @Override
@@ -29,13 +29,13 @@ public class App {
         int x = 1;
         do {
             System.out.println("Menu:");
-            for (menu m : menu.values()) {
-                System.out.println(x++ + ". " + m);
+            for (Menu menu : Menu.values()) {
+                System.out.println(x++ + ". " + menu);
             }
             x= 1;
             choice = craftManagement.intValidator(scanner);
             switch (choice) {
-                case 1 -> craftManagement.add(categoryManager.getCategories(), scanner);
+                case 1 -> categoryManager.edit(craftManagement.getCrafts(), scanner);
                 case 2 -> categoryManager.add(craftManagement.getCrafts(), scanner);
                 case 3 -> craftManagement.viewCrafts();
                 case 4 -> craftManagement.edit(categoryManager.getCategories(), scanner);

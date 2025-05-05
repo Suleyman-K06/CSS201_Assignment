@@ -59,6 +59,9 @@ public interface Manageable<T extends Nameable> {
 
     default int getValidIndex(Scanner scanner, int maxIndex) {
         while (true) {
+            if (scanner.hasNextLine()) {
+                scanner.nextLine(); 
+            }
             try {
                 System.out.print("Enter your choice (1-" + maxIndex + "): ");
                 String input = scanner.nextLine().trim();
@@ -79,7 +82,7 @@ public interface Manageable<T extends Nameable> {
 
     default String getNonEmptyInput(Scanner scanner, String prompt) {
         if (scanner.hasNextLine()) {
-            scanner.nextLine(); // Clear the buffer
+            scanner.nextLine(); 
         }
         String input;
         do {
