@@ -25,17 +25,17 @@ public class App {
 
         CraftManagement craftManagement = new CraftManagement();
         CategoryManager categoryManager = new CategoryManager();
-        int choice = 0;
         int x = 1;
+        int choice;
         do {
             System.out.println("Menu:");
             for (Menu menu : Menu.values()) {
                 System.out.println(x++ + ". " + menu);
             }
-            x= 1;
+            x = 1;
             choice = craftManagement.intValidator(scanner);
             switch (choice) {
-                case 1 -> categoryManager.edit(craftManagement.getCrafts(), scanner);
+                case 1 -> craftManagement.add(categoryManager.getCategories(), scanner);
                 case 2 -> categoryManager.add(craftManagement.getCrafts(), scanner);
                 case 3 -> craftManagement.viewCrafts();
                 case 4 -> craftManagement.edit(categoryManager.getCategories(), scanner);
@@ -47,6 +47,6 @@ public class App {
                 }
                 default -> System.out.println("Invalid option. Please try again.");
             }
-        } while (choice != 6);
+        } while (true);
     }
 }

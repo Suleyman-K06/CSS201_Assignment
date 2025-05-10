@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 public class CraftManagement implements Manageable<Category> {
@@ -16,6 +15,7 @@ public class CraftManagement implements Manageable<Category> {
                 return scanner.nextInt();
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input! Please enter a number: ");
+                scanner.nextLine();
             }
         }
     }
@@ -26,6 +26,7 @@ public class CraftManagement implements Manageable<Category> {
                 return scanner.nextDouble();
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input! Please enter a decimal number: ");
+                scanner.nextLine();
             }
         }
     }
@@ -172,13 +173,42 @@ public class CraftManagement implements Manageable<Category> {
                 craft.getName(),
                 craft.getQuantity(),
                 craft.getPrice(),
-                craft.getCategory().getName(),
+                new Category("null", crafts),
                 craft.getDescription());
     }
 
     @Override
     public void delete(Scanner scanner) {
-       
+        if (scanner.hasNextLine()) {
+            scanner.nextLine(); // Clear the buffer
+        }
+        ArrayList<Craft> selectedList = new ArrayList<>();
+    
+        if (crafts.isEmpty()) {
+            System.out.println("No crafts available to assign.");
+            return;
+        }
+    
+        viewCrafts();
+        System.out.println("Enter index numbers of crafts to assign to " + "delete" + "\" (e.g. 1, 3, 5):");
+        String input = scanner.nextLine().trim();
+        String[] indexStrings = input.split(",");
+    
+
+        for (String indexString : indexStrings) {
+            try {
+                int index = Integer.parseInt(indexString.trim()) - 1;
+                if (index >= 0 && index < crafts.size()) {
+                    selectedList.add(crafts.get(index));
+                } else {
+                    System.out.println("Index out of bounds: " + (index + 1));
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input: " + indexString + " is not a number.");
+            }
+        }
+        
+        crafts.removeAll(selectedList);
     }
 
     public CraftManagement() {

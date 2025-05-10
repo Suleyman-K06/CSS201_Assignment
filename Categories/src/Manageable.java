@@ -58,10 +58,10 @@ public interface Manageable<T extends Nameable> {
     }
 
     default int getValidIndex(Scanner scanner, int maxIndex) {
-        while (true) {
-            if (scanner.hasNextLine()) {
-                scanner.nextLine(); 
-            }
+        if (scanner.hasNextLine()) {
+            scanner.nextLine(); 
+        }
+        while (true) {   
             try {
                 System.out.print("Enter your choice (1-" + maxIndex + "): ");
                 String input = scanner.nextLine().trim();
